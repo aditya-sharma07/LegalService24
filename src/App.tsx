@@ -24,9 +24,12 @@ import Notifications from './components/Notifications';
 import AdminPanel from './components/AdminPanel';
 import LawyerDashboard from "./components/LawyerDashboard";
 import { useTranslation } from 'react-i18next';
+import { supabase } from "./lib/supabase";
 import "./i18n"; // Import the i18n configuration
 
 type Page = 'home' | 'lawyer-selection' | 'premium' | 'about' | 'explore-services' | 'blog' | 'terms' | 'careers' | 'become-consultant' | 'insurance' | 'document-upload' | 'case-tracking' | 'lawyer-reviews' | 'notifications';
+
+
 
 function App() {
   const [currentTagline, setCurrentTagline] = useState(0);
@@ -144,6 +147,7 @@ function App() {
     { icon: <Clock className="w-6 h-6" />, value: "24/7", label: "Support" }
   ];
 
+ 
   const contactInfo = [
     {
       icon: <Phone className="w-6 h-6 text-blue-600" />,
@@ -218,8 +222,9 @@ function App() {
       setCurrentPage('lawyer-selection');  
     }
   }, [selectedSpecialization, selectedSubcategory]);
+
   
-    
+  
   
 
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
