@@ -1,32 +1,6 @@
-import React, { useState } from "react";
-import { supabase } from "../lib/supabase"; // ✅ Ensure correct import
-import toast from "react-hot-toast"; // ✅ Install with `npm install react-hot-toast`
-
-const civilSubcategories = [
-  "Family & Matrimony Advice",
-  "Banking & Corporate Matters",
-  "Employment & Labor Matters",
-  "Property Disputes",
-  "Send a Demand Notice",
-  "Draft Agreement",
-  "Review Property Papers",
-  "Partition Suit",
-  "Consumer Disputes",
-  "Intellectual Property Rights"
-];
-
-const criminalSubcategories = [
-  "Cheque Bounce Cases",
-  "Domestic Violence",
-  "Sexual Harassment at Workplace",
-  "Fraud & Cybercrime",
-  "Theft & Robbery",
-  "Assault & Battery",
-  "Drug Offenses",
-  "White-Collar Crimes",
-  "Criminal Defense",
-  "Bail Applications"
-];
+import { useState } from "react";
+import { supabase } from "../lib/supabase";
+import toast from "react-hot-toast";
 
 const BecomeConsultant = () => {
   const [formData, setFormData] = useState({
@@ -38,52 +12,37 @@ const BecomeConsultant = () => {
     contact: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // ✅ Prevent multiple submissions
+  const [success, setSuccess] = useState(false); // ✅ Show success message
 
-  // ✅ Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const civilSubcategories = [
+    "Family & Matrimony Advice", "Banking & Corporate Matters",
+    "Employment & Labor Matters", "Property Disputes",
+    "Send a Demand Notice", "Draft Agreement",
+    "Review Property Papers", "Partition Suit",
+    "Consumer Disputes", "Intellectual Property Rights"
+  ];
 
-  // ✅ Handle form submission
+  const criminalSubcategories = [
+    "Cheque Bounce Cases", "Domestic Violence",
+    "Sexual Harassment at Workplace", "Fraud & Cybercrime",
+    "Theft & Robbery", "Assault & Battery",
+    "Drug Offenses", "White-Collar Crimes",
+    "Criminal Defense", "Bail Applications"
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    setLoading(true); // ✅ Disable button to prevent duplicate submissions
+    setSuccess(false); // ✅ Reset success message
 
-    // ✅ Get authenticated user
-    const { data: userResponse, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !userResponse?.user) {
-      setError("You must be logged in to register as a consultant.");
-      toast.error("Login required!");
-      setLoading(false);
-      return;
-    }
-
-    const user = userResponse.user; // ✅ Extract user object
-
-    // ✅ Insert consultant data into Supabase
-    const { data, error } = await supabase.from("consultants").insert([
-      {
-        user_id: user.id, // ✅ Ensure user_id is stored
-        name: formData.name,
-        email: formData.email,
-        specialization: formData.specialization,
-        subcategory: formData.subcategory || civilSubcategories[0], // Default subcategory
-        experience: Number(formData.experience),
-        contact: formData.contact,
-        status: "Pending", // ✅ Default status is 'Pending'
-      },
-    ]);
+    const { error } = await supabase.from("consultants").insert([formData]);
 
     if (error) {
-      setError(error.message);
-      console.error("Supabase Insert Error:", error.message);
-      toast.error("Registration failed!");
+      toast.error("Error registering. Try again!");
     } else {
-      toast.success("Registration successful! Awaiting admin approval.");
+      toast.success("Successfully registered as a consultant!");
+      setSuccess(true); // ✅ Show success message
       setFormData({
         name: "",
         email: "",
@@ -93,43 +52,42 @@ const BecomeConsultant = () => {
         contact: "",
       });
     }
-
-    setLoading(false);
+    setLoading(false); // ✅ Re-enable the button
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-12">
-      <h2 className="text-2xl font-bold mb-4">Register as a Consultant</h2>
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
+      <h2 className="text-2xl font-bold mb-4 text-center">Become a Consultant</h2>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {success && (
+        <div className="bg-green-100 text-green-800 p-3 rounded-lg mb-4 text-center">
+          ✅ Registration Successful! You can now register another consultant.
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          name="name"
           type="text"
           placeholder="Full Name"
           value={formData.name}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          className="w-full p-2 border rounded"
           required
-          className="w-full border p-2 rounded-md"
         />
-
         <input
-          name="email"
           type="email"
-          placeholder="Email Address"
+          placeholder="Email"
           value={formData.email}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className="w-full p-2 border rounded"
           required
-          className="w-full border p-2 rounded-md"
         />
-
+        
         {/* Specialization Dropdown */}
         <select
-          name="specialization"
           value={formData.specialization}
-          onChange={handleChange}
-          className="w-full border p-2 rounded-md"
+          onChange={(e) => setFormData({ ...formData, specialization: e.target.value, subcategory: "" })}
+          className="w-full p-2 border rounded"
         >
           <option value="Civil Law">Civil Law</option>
           <option value="Criminal Law">Criminal Law</option>
@@ -137,44 +95,42 @@ const BecomeConsultant = () => {
 
         {/* Subcategory Dropdown */}
         <select
-          name="subcategory"
           value={formData.subcategory}
-          onChange={handleChange}
-          className="w-full border p-2 rounded-md"
+          onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
+          className="w-full p-2 border rounded"
           required
         >
           <option value="">Select Subcategory</option>
-          {(formData.specialization === "Civil Law" ? civilSubcategories : criminalSubcategories).map((sub, index) => (
-            <option key={index} value={sub}>{sub}</option>
+          {(formData.specialization === "Civil Law" ? civilSubcategories : criminalSubcategories).map((sub) => (
+            <option key={sub} value={sub}>{sub}</option>
           ))}
         </select>
 
         <input
-          name="experience"
           type="number"
           placeholder="Years of Experience"
           value={formData.experience}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+          className="w-full p-2 border rounded"
           required
-          className="w-full border p-2 rounded-md"
         />
-
         <input
-          name="contact"
           type="text"
           placeholder="Contact Number"
           value={formData.contact}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+          className="w-full p-2 border rounded"
           required
-          className="w-full border p-2 rounded-md"
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        <button 
+          type="submit" 
+          className={`w-full text-white p-2 rounded transition ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+          }`}
+          disabled={loading} // ✅ Disable button when loading
         >
-          {loading ? "Submitting..." : "Submit Application"}
+          {loading ? "Registering..." : "Register as Consultant"}
         </button>
       </form>
     </div>
