@@ -35,6 +35,9 @@ function App() {
   const [currentTagline, setCurrentTagline] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>('home');
+  // ✅ Added state for specialization and subcategory
+  const [selectedSpecialization, setSelectedSpecialization] = useState<string | null>(null); // ✅ Fix
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null); // ✅ Fix
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -43,12 +46,6 @@ function App() {
   const [selectedLawyerId, setSelectedLawyerId] = useState<number | null>(null);
   const { isSignedIn, user } = useUser();
   const { t } = useTranslation();
-  
-  // ✅ Added state for specialization and subcategory
-  const [selectedSpecialization, setSelectedSpecialization] = useState<string | null>(null); // ✅ Fix
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null); // ✅ Fix
-  
-  
   
   const taglines = [
     "Your Legal Consultation, Your Schedule!",
@@ -223,10 +220,6 @@ function App() {
     }
   }, [selectedSpecialization, selectedSubcategory]);
 
-  
-  
-  
-
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -259,16 +252,30 @@ function App() {
     setCurrentPage(page); // ✅ No error now
   };
 
-  const handleBookAppointment = (service: string) => {
-    console.log(`Booking appointment for: ${service}`);
+  const handleBookAppointment = (service: string): void => {
+  console.log(`Booking appointment for: ${service}`);
+
+  // ✅ Ensure state updates before navigation
+  setSelectedSpecialization("General Consultation"); // Default specialization
+  setSelectedSubcategory(service); // Use selected service as subcategory
+
+  // ✅ Navigate to Lawyer Selection after state updates
+  setTimeout(() => {
+    setCurrentPage("lawyer-selection");
+  }, 100); // Small delay ensures state updates before navigation
+};
+
   
-    // ✅ Ensure specialization and subcategory are set before navigation
-    setSelectedSpecialization('General Consultation'); // Set a default specialization
-    setSelectedSubcategory(service); // Use the selected service as subcategory
+
+const handleServiceClick = (service: string): void => {
+  setSelectedService(service); // ✅ Update the selected service
   
-    setCurrentPage('lawyer-selection'); // ✅ Navigate to Lawyer Selection page
+    // ✅ Scroll to the "Book Appointments" section
+    const servicesSection = document.getElementById("services");
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ behavior: "smooth" });
+    }
   };
-  
   
 
   const handleSubcategoryClick = (subcategory: string, specialization: string) => {
@@ -405,7 +412,7 @@ function App() {
               </div>
             </div>
 
-            {/* Services Section */}
+            {/* Book Appointments Section */}
                         <div id="services" className="py-20 bg-white">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 className="text-3xl font-bold text-center mb-4">{t('Book Appointment Now')}</h2>
@@ -592,10 +599,31 @@ function App() {
                   <div className="w-1/2 sm:w-auto mb-6 md:mb-0">
                     <h4 className="font-semibold mb-4">{t('Services')}</h4>
                     <ul className="space-y-2">
-                      <li><button onClick={() => setSelectedService('Online Consultation')} className="text-gray-400 hover:text-white transition-colors">{t('Online Consultation')}</button></li>
-                      <li><button onClick={() => setSelectedService('Home Appointment')} className="text-gray-400 hover:text-white transition-colors">{t('Home Appointment')}</button></li>
-                      <li><button onClick={() => setSelectedService('Office Appointment')} className="text-gray-400 hover:text-white transition-colors">{t('Office Appointment')}</button></li>
-                    </ul>
+                    <li>
+                      <button
+                        onClick={() => handleServiceClick("Online Consultation")}
+                        className="text-gray-400 hover:text-white transition-colors"
+                      >
+                        {t("Online Consultation")}
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => handleServiceClick("Home Appointment")}
+                        className="text-gray-400 hover:text-white transition-colors"
+                      >
+                        {t("Home Appointment")}
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => handleServiceClick("Office Appointment")}
+                        className="text-gray-400 hover:text-white transition-colors"
+                      >
+                        {t("Office Appointment")}
+                      </button>
+                    </li>
+                  </ul>
                   </div>
                         
                   <div className="w-1/2 sm:w-auto">
@@ -897,6 +925,7 @@ function App() {
         <Route path="/become-consultant" element={<BecomeConsultant />} />
         <Route path="/admin-panel" element={<AdminPanel />} />
         <Route path="/lawyer-dashboard" element={<LawyerDashboard />} />
+        
       </Routes>
     </BrowserRouter>
   );

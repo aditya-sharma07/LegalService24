@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import toast from "react-hot-toast";
 import { Briefcase, Phone, User, Star, ChevronLeft, Eye, Search } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom";
 
 interface LawyerSelectionProps {
   specialization: string;
   subcategory: string;
   onBack: () => void;
-  onViewReviews: (lawyerId: number) => void;
+  onViewReviews: (lawyerId: number) => void; 
 }
 
 interface Lawyer {
@@ -25,7 +25,7 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
   const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   // Search and Filter States
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -50,7 +50,7 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
           setError(`No lawyers found for ${subcategory}.`);
         } else {
           setLawyers(data);
-          setFilteredLawyers(data); // Initialize filtered lawyers with all data
+          setFilteredLawyers(data);
         }
       } catch (err: any) {
         console.error("Error fetching lawyers:", err.message);
@@ -85,13 +85,13 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
 
   // Handle View Reviews
   const handleViewReviews = (lawyerId: number) => {
-    navigate(`/lawyer-reviews/${lawyerId}`); // Navigate to LawyerReviews with lawyerId
+    navigate(`/lawyer-reviews/${lawyerId}`);
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-gray-100 shadow-md rounded-lg mt-20">
+    <div className="max-w-6xl mx-auto p-6 bg-gray-100 shadow-md rounded-lg mt-20">
       {/* Back Button */}
-      <button onClick={onBack} className="flex items-center text-blue-600 hover:underline mb-4">
+      <button onClick={onBack} className="flex items-center text-blue-600 hover:underline mb-6">
         <ChevronLeft className="w-5 h-5 mr-2" /> Back
       </button>
 
@@ -100,10 +100,10 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
         Available Lawyers for {subcategory}
       </h2>
 
-      {/* Search and Filters in a Single Line */}
-      <div className="flex flex-wrap gap-4 mb-6">
+      {/* Search and Filters Section */}
+      <div className="flex flex-wrap gap-4 mb-6 justify-center">
         {/* Search Bar */}
-        <div className="relative flex-1">
+        <div className="relative flex-1 max-w-md">
           <input
             type="text"
             placeholder="Search by name..."
@@ -135,34 +135,34 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
       ) : filteredLawyers.length === 0 ? (
         <p className="text-gray-600 text-center">No lawyers match your search or filters.</p>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-6">
           {filteredLawyers.map((lawyer) => (
-            <div key={lawyer.id} className="bg-white p-6 rounded-xl shadow-lg flex items-center">
+            <div key={lawyer.id} className="bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row items-center md:items-start hover:shadow-xl transition-shadow">
               {/* Lawyer Avatar */}
-              <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center mr-6">
-                <User className="w-10 h-10 text-gray-600" />
+              <div className="w-28 h-28 bg-gray-300 rounded-full flex items-center justify-center mr-6 mb-4 md:mb-0">
+                <User className="w-14 h-14 text-gray-600" />
               </div>
 
               {/* Lawyer Details */}
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-800">{lawyer.name}</h3>
+                <h3 className="text-2xl font-bold text-gray-800">{lawyer.name}</h3>
                 <p className="text-gray-600 flex items-center mt-2">
-                  <Briefcase className="w-4 h-4 mr-2 text-blue-600" />
-                  Specialization: {lawyer.specialization}
+                  <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
+                  {lawyer.specialization}
                 </p>
                 <p className="text-gray-600 flex items-center">
-                  <Star className="w-4 h-4 mr-2 text-yellow-500" />
-                  Experience: {lawyer.experience} years
+                  <Star className="w-5 h-5 mr-2 text-yellow-500" />
+                  {lawyer.experience} years experience
                 </p>
                 <p className="text-gray-600 flex items-center">
-                  <Phone className="w-4 h-4 mr-2 text-green-500" />
-                  Contact: {lawyer.contact}
+                  <Phone className="w-5 h-5 mr-2 text-green-500" />
+                  {lawyer.contact}
                 </p>
 
                 {/* View Reviews Button */}
                 <button
-                  onClick={() => handleViewReviews(lawyer.id)} // Use handleViewReviews
-                  className="mt-4 flex items-center text-blue-600 font-medium hover:underline"
+                  onClick={() => handleViewReviews(lawyer.id)}
+                  className="mt-4 flex items-center text-white bg-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
                 >
                   <Eye className="w-5 h-5 mr-2" />
                   View Reviews
