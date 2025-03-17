@@ -61,16 +61,17 @@ const AdminPanel = () => {
   const handleApprove = async (id: number) => {
     const { error } = await supabase
       .from("consultants")
-      .update({ status: "Approved" }) // ✅ Set status to 'Approved'
+      .update({ status: "Approved" }) 
       .eq("id", id);
-
-      if (error) {
-        toast.error("Failed to approve consultant.");
-      } else {
-        toast.success("Consultant approved!");
-        setPendingConsultants(pendingConsultants.filter(c => c.id !== id));
-      }
-    };
+  
+    if (error) {
+      console.error("Supabase error:", error.message);
+      toast.error("Failed to approve consultant.");
+    } else {
+      toast.success("Consultant approved!");
+      setPendingConsultants(pendingConsultants.filter(c => c.id !== id));
+    }
+  };
 
   const handleReject = async (id: number) => {
     const { error } = await supabase
