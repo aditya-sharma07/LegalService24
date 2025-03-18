@@ -318,7 +318,7 @@ const handleServiceClick = (service: string): void => {
       case 'about':
         return <About onBack={navigateToHome} />;
       case 'explore-services':
-        return <ExploreServices onBack={navigateToHome} />;
+        return <ExploreServices onBack={navigateToHome}/>;
       case 'blog':
         return <Blog onBack={navigateToHome} />;
       case 'terms':
@@ -932,7 +932,7 @@ const handleServiceClick = (service: string): void => {
           </div>
         } />
          {/* Lawyer & Admin Pages (Open in a New Tab) */}
-         
+        
         <Route path="/become-consultant" element={<BecomeConsultant />} />
         <Route path="/admin-panel" element={<AdminPanel />} />
         <Route path="/lawyer-dashboard" element={<LawyerDashboard />} />
