@@ -42,7 +42,9 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
           .from("consultants")
           .select("*")
           .eq("specialization", specialization)
-          .eq("subcategory", subcategory);
+          .eq("subcategory", subcategory)
+          .eq("status", "Approved");
+          
 
         if (error) throw error;
 
