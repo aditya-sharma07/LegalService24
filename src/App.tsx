@@ -21,8 +21,6 @@ import CaseTracking from './components/CaseTracking';
 import LawyerReviews from './components/LawyerReviews';
 import LanguageSelector from './components/LanguageSelector';
 import Notifications from './components/Notifications';
-import AdminPanel from './components/AdminPanel';
-import LawyerDashboard from "./components/LawyerDashboard";
 import { useTranslation } from 'react-i18next';
 import { supabase } from "./lib/supabase";
 import "./i18n"; // Import the i18n configuration
@@ -587,14 +585,6 @@ const handleServiceClick = (service: string): void => {
                   <div className="w-full md:w-auto mb-6 md:mb-0">
                     <h3 className="text-xl font-bold mb-4">LegalService24</h3>
                     <p className="text-gray-400">Your trusted legal partner, available 24/7.</p>
-                    <a
-                      href="/admin-panel"
-                      target="_blank" // Opens in a new tab
-                      rel="noopener noreferrer" // Security best practice
-                      className="text-blue-400 hover:underline"
-                    >
-                      Admin Panel
-                    </a>
                   </div>
                   
                   <div className="w-1/2 sm:w-auto mb-6 md:mb-0">
@@ -934,8 +924,6 @@ const handleServiceClick = (service: string): void => {
          {/* Lawyer & Admin Pages (Open in a New Tab) */}
         
         <Route path="/become-consultant" element={<BecomeConsultant />} />
-        <Route path="/admin-panel" element={<AdminPanel />} />
-        <Route path="/lawyer-dashboard" element={<LawyerDashboard />} />
       </Routes>
     </BrowserRouter>
   );
