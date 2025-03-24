@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
-import toast from "react-hot-toast";
-import { Briefcase, Phone, User, Star, ChevronLeft, Eye, Search } from "lucide-react";
+import { Briefcase, Phone, User, Star, ChevronLeft, Eye, Search, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface LawyerSelectionProps {
   specialization: string;
   subcategory: string;
   onBack: () => void;
-  onViewReviews: (lawyerId: number) => void; 
+  onViewReviews: (lawyerId: number) => void;
 }
 
 interface Lawyer {
@@ -44,7 +43,6 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
           .eq("specialization", specialization)
           .eq("subcategory", subcategory)
           .eq("status", "Approved");
-          
 
         if (error) throw error;
 
@@ -88,6 +86,11 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
   // Handle View Reviews
   const handleViewReviews = (lawyerId: number) => {
     navigate(`/lawyer-reviews/${lawyerId}`);
+  };
+
+  // Handle Booking Consultation
+  const handleBookConsultation = (lawyerId: number) => {
+    navigate(`/book-consultation/${lawyerId}`);
   };
 
   return (
@@ -161,14 +164,26 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
                   {lawyer.contact}
                 </p>
 
-                {/* View Reviews Button */}
-                <button
-                  onClick={() => handleViewReviews(lawyer.id)}
-                  className="mt-4 flex items-center text-white bg-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
-                >
-                  <Eye className="w-5 h-5 mr-2" />
-                  View Reviews
-                </button>
+                {/* Buttons Section */}
+                <div className="mt-4 flex space-x-3">
+                  {/* View Reviews Button */}
+                  <button
+                    onClick={() => handleViewReviews(lawyer.id)}
+                    className="flex items-center text-white bg-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+                  >
+                    <Eye className="w-5 h-5 mr-2" />
+                    View Reviews
+                  </button>
+
+                  {/* Book Consultation Button */}
+                  <button
+                    onClick={() => handleBookConsultation(lawyer.id)}
+                    className="flex items-center text-white bg-gradient-to-r from-green-500 to-green-700 px-5 py-2 rounded-lg font-medium hover:scale-105 transition transform shadow-lg"
+                  >
+                    <Calendar className="w-5 h-5 mr-2" />
+                    Book Consultation
+                  </button>
+                </div>
               </div>
             </div>
           ))}
