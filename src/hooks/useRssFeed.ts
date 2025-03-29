@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import Parser from 'rss-parser';
 import { legalNewsFeeds } from '../lib/rssFeeds';
 
+// Define the FeedItem type with mandatory fields
 type FeedItem = {
   title: string;
   link: string;
   content: string;
-  contentSnippet?: string;
-  isoDate?: string;
-  creator?: string;
-  categories?: string[];
+  isoDate: string; // 🔹 Ensure isoDate is always a string (not undefined)
+  creator: string;
+  categories: string[];
 };
 
 export function useRssFeed(selectedCategory: string = 'all') {
@@ -23,14 +23,14 @@ export function useRssFeed(selectedCategory: string = 'all') {
       setError(null);
       
       try {
-        const parser = new Parser({
+        const parser = new Parser<{}, FeedItem>({
           customFields: {
             item: [
               ['creator', 'dc:creator'],
               ['pubDate', 'pubDate'],
               ['content:encoded', 'content'],
-            ]
-          }
+            ],
+          },
         });
 
         const relevantFeeds = selectedCategory === 'all'
@@ -39,7 +39,6 @@ export function useRssFeed(selectedCategory: string = 'all') {
 
         const feedPromises = relevantFeeds.map(async (feed) => {
           try {
-            // Use a more reliable CORS proxy
             const corsProxy = 'https://api.allorigins.win/raw?url=';
             const response = await fetch(`${corsProxy}${encodeURIComponent(feed.url)}`);
             
@@ -50,14 +49,13 @@ export function useRssFeed(selectedCategory: string = 'all') {
             const xmlText = await response.text();
             const parsedFeed = await parser.parseString(xmlText);
 
-            return (parsedFeed.items || []).map(item => ({
+            return (parsedFeed.items || []).map((item) => ({
               title: item.title || 'Untitled',
               link: item.link || '#',
-              content: item['content:encoded'] || item.content || item.description || '',
-              contentSnippet: item.contentSnippet || item.description || '',
-              isoDate: item.isoDate || item.pubDate || new Date().toISOString(),
-              creator: item.creator || item.author || 'Unknown',
-              categories: item.categories || []
+              content: item.content || item.contentSnippet || '',
+              isoDate: item.isoDate || item.pubDate || new Date().toISOString(), // 🔹 Ensure string value
+              creator: item.creator || 'Unknown',
+              categories: item.categories || [],
             }));
           } catch (err) {
             console.error(`Error fetching ${feed.name}:`, err);
@@ -68,27 +66,17 @@ export function useRssFeed(selectedCategory: string = 'all') {
         const feedResults = await Promise.allSettled(feedPromises);
         const successfulFeeds = feedResults
           .filter((result): result is PromiseFulfilledResult<FeedItem[]> => 
-            result.status === 'fulfilled')
-          .map(result => result.value)
-          .flat();
+            result.status === 'fulfilled' && Array.isArray(result.value))
+          .flatMap(result => result.value);
 
         if (successfulFeeds.length === 0) {
           setError('Unable to load articles at this time. Please try again later.');
-          setArticles([]);
-        } else {
-          const sortedArticles = successfulFeeds
-            .sort((a, b) => 
-              new Date(b.isoDate || '').getTime() - new Date(a.isoDate || '').getTime()
-            )
-            .slice(0, 30); // Limit to 30 most recent articles
-          
-          setArticles(sortedArticles);
-          setError(null);
         }
+
+        setArticles(successfulFeeds);
       } catch (err) {
         console.error('Error fetching RSS feeds:', err);
         setError('Failed to load articles. Please try again later.');
-        setArticles([]);
       } finally {
         setLoading(false);
       }
