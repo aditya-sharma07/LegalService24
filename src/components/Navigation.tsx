@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronDown, X, Menu, Bell } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/clerk-react';
@@ -16,19 +16,39 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
   const { isSignedIn, user } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  
+  // Refs for dropdown elements
+  const dropdownContainerRef = useRef<HTMLDivElement>(null);
 
-  const handlePremiumMenuToggle = () => {
-    setIsPremiumMenuOpen(!isPremiumMenuOpen);
+  // Handle hover with timeout for better UX
+  let hoverTimeout: NodeJS.Timeout;
+
+  const handleMouseEnter = () => {
+    clearTimeout(hoverTimeout);
+    setIsPremiumMenuOpen(true);
   };
+
+  const handleMouseLeave = () => {
+    // Add slight delay before closing to allow cursor movement
+    hoverTimeout = setTimeout(() => {
+      setIsPremiumMenuOpen(false);
+    }, 200);
+  };
+
+  // Clear timeout when component unmounts
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(hoverTimeout);
+    };
+  }, []);
 
   return (
     <>
-      {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white shadow-md z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             
-            {/* Logo - Navigates to Home */}
+            {/* Logo */}
             <div className="flex items-center">
               <Logo onClick={() => navigate('/')} />
             </div>
@@ -42,10 +62,14 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
                 {t('Blog')}
               </Link>
               
-              {/* Premium Plans Dropdown */}
-              <div className="relative">
+              {/* Premium Plans Dropdown - Only Insurance */}
+              <div 
+                ref={dropdownContainerRef}
+                className="relative"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
                 <button 
-                  onClick={handlePremiumMenuToggle}
                   className="flex items-center text-gray-600 hover:text-blue-600 transition-colors"
                 >
                   {t('Premium Plans')}
@@ -53,25 +77,15 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
                 </button>
                 
                 {isPremiumMenuOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-2 z-50">
-                    <Link 
-                      to="/premium/document-services"
-                      onClick={() => setIsPremiumMenuOpen(false)}
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                    >
-                      {t('Document Services')}
-                    </Link>
-                    <Link 
-                      to="/premium/legal-protection"
-                      onClick={() => setIsPremiumMenuOpen(false)}
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                    >
-                      {t('Legal Protection Plans')}
-                    </Link>
+                  <div 
+                    className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
                     <Link 
                       to="/insurance"
-                      onClick={() => setIsPremiumMenuOpen(false)}
                       className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                      onClick={() => setIsPremiumMenuOpen(false)}
                     >
                       {t('Insurance')}
                     </Link>
@@ -79,7 +93,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
                 )}
               </div>
 
-              {/* About Page Button */}
               <Link 
                 to="/about"
                 className="text-gray-600 hover:text-blue-600 transition-colors"
@@ -87,7 +100,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
                 {t('About')}
               </Link>
 
-              {/* Language Selector */}
               <LanguageSelector />
               
               {isSignedIn && (
@@ -123,6 +135,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
               )}
             </div>
 
+            {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
               <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -151,7 +164,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
               {t('Blog')}
             </Link>
             
-            {/* Mobile Premium Plans Dropdown */}
+            {/* Mobile Premium Plans Dropdown - Only Insurance */}
             <div className="relative">
               <button 
                 onClick={() => setIsPremiumMenuOpen(!isPremiumMenuOpen)}
@@ -162,27 +175,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
               </button>
               
               {isPremiumMenuOpen && (
-                <div className="pl-4 mt-2 space-y-2">
-                  <Link 
-                    to="/premium/document-services"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setIsPremiumMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-gray-600 hover:text-blue-600"
-                  >
-                    {t('Document Services')}
-                  </Link>
-                  <Link 
-                    to="/premium/legal-protection"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setIsPremiumMenuOpen(false);
-                    }}
-                    className="block w-full text-left text-gray-600 hover:text-blue-600"
-                  >
-                    {t('Legal Protection Plans')}
-                  </Link>
+                <div className="pl-4 mt-2">
                   <Link 
                     to="/insurance"
                     onClick={() => {
@@ -197,7 +190,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
               )}
             </div>
 
-            {/* About Page Button */}
             <Link 
               to="/about"
               onClick={() => setIsMenuOpen(false)}
@@ -206,7 +198,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
               {t('About')}
             </Link>
 
-            {/* Language Selector */}
             <LanguageSelector isMobile={true} />
             
             {isSignedIn ? (

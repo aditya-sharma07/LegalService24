@@ -1,14 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { ArrowLeft, Upload, File, FileText, Trash2, Lock, Shield, Eye, Download } from 'lucide-react';
+import { Upload, File, FileText, Trash2, Lock, Shield, Eye, Download } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
-import { useUser, useClerk } from '@clerk/clerk-react'; // Import useClerk
+import { useNavigate } from 'react-router-dom';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
-
-interface DocumentUploadProps {
-  onBack: () => void;
-}
 
 interface Document {
   id: string;
@@ -20,13 +17,14 @@ interface Document {
   status: 'uploaded' | 'shared' | 'reviewed';
 }
 
-const DocumentUpload: React.FC<DocumentUploadProps> = ({ onBack }) => {
+const DocumentUpload: React.FC = () => {
+  const navigate = useNavigate();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareEmail, setShareEmail] = useState('');
-  const { isSignedIn, user } = useUser();
-  const { openSignIn } = useClerk(); // Use Clerk's sign-in method
+  const { isSignedIn } = useUser();
+  const { openSignIn } = useClerk();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (!isSignedIn) {
@@ -77,7 +75,6 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ onBack }) => {
       return;
     }
     
-    // Update the document's sharedWith array
     setDocuments(prev => 
       prev.map(doc => 
         doc.id === selectedDocument.id 
@@ -113,14 +110,6 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ onBack }) => {
     return (
       <div className="min-h-screen bg-gray-50 pt-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <button
-            onClick={onBack}
-            className="flex items-center text-blue-600 hover:text-blue-700 mb-8"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back
-          </button>
-          
           <div className="bg-white rounded-xl shadow-lg p-8 text-center">
             <Lock className="w-16 h-16 text-blue-600 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">Secure Document Upload</h1>
@@ -128,7 +117,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ onBack }) => {
               Please sign in to securely upload and manage your legal documents.
             </p>
             <button 
-              onClick={() => openSignIn()} // Use Clerk's sign-in method
+              onClick={() => openSignIn()}
               className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
             >
               Sign In to Continue
@@ -142,14 +131,6 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button
-          onClick={onBack}
-          className="flex items-center text-blue-600 hover:text-blue-700 mb-8"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back
-        </button>
-
         <div className="grid md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">

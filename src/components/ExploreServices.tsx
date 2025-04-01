@@ -1,11 +1,10 @@
 import React from "react";
-import { ArrowLeft, FileText, Shield, Briefcase, Globe, Home, Gavel, Scale, PenTool, ScrollText, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { FileText, Shield, Briefcase, Globe, Home, Gavel, Scale, PenTool, ScrollText, ArrowRight } from "lucide-react";
 
-interface ExploreServicesProps {
-  onBack: () => void;
-}
+const ExploreServices: React.FC = () => {
+  const navigate = useNavigate();
 
-const ExploreServices: React.FC<ExploreServicesProps> = ({ onBack }) => {
   const services = [
     {
       category: "Legal Document Preparation",
@@ -156,14 +155,6 @@ const ExploreServices: React.FC<ExploreServicesProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button
-          onClick={onBack}
-          className="flex items-center text-blue-600 hover:text-blue-700 mb-8"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Home
-        </button>
-
         <h1 className="text-4xl font-bold text-center mb-4">Our Legal Services</h1>
         <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
           Comprehensive legal solutions tailored to your needs. Choose from our range of
@@ -191,7 +182,10 @@ const ExploreServices: React.FC<ExploreServicesProps> = ({ onBack }) => {
                         </li>
                       ))}
                     </ul>
-                    <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => navigate(`/service-details/${service.category.toLowerCase().replace(/\s+/g, '-')}/${plan.title.toLowerCase().replace(/\s+/g, '-')}`)}
+                      className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                    >
                       Learn More
                       <ArrowRight className="w-5 h-5" />
                     </button>

@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
-import { Briefcase, Phone, User, Star, ChevronLeft, Eye, Search, Calendar } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
-interface LawyerSelectionProps {
-  specialization: string;
-  subcategory: string;
-  onBack: () => void;
-  onViewReviews: (lawyerId: number) => void;
-}
+import { Briefcase, Phone, User, Star, Eye, Search, Calendar } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface Lawyer {
   id: number;
@@ -19,12 +12,15 @@ interface Lawyer {
   contact: string;
 }
 
-const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subcategory, onBack }) => {
+const LawyerSelection: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { specialization = "General Consultation", subcategory = "Online Consultation" } = location.state || {};
+  
   const [lawyers, setLawyers] = useState<Lawyer[]>([]);
   const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const navigate = useNavigate();
 
   // Search and Filter States
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -95,11 +91,6 @@ const LawyerSelection: React.FC<LawyerSelectionProps> = ({ specialization, subca
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-100 shadow-md rounded-lg mt-20">
-      {/* Back Button */}
-      <button onClick={onBack} className="flex items-center text-blue-600 hover:underline mb-6">
-        <ChevronLeft className="w-5 h-5 mr-2" /> Back
-      </button>
-
       {/* Heading */}
       <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
         Available Lawyers for {subcategory}

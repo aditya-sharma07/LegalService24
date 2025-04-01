@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Shield, Check, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Shield, Check, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
 import { SignInButton } from '@clerk/clerk-react';
 
-interface InsuranceProps {
-  onBack: () => void;
-}
-
-const Insurance: React.FC<InsuranceProps> = ({ onBack }) => {
+const Insurance: React.FC = () => {
+  const navigate = useNavigate();
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -130,14 +128,6 @@ const Insurance: React.FC<InsuranceProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button
-          onClick={onBack}
-          className="flex items-center text-blue-600 hover:text-blue-700 mb-8"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Home
-        </button>
-
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Legal Professional Insurance</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -270,7 +260,7 @@ const Insurance: React.FC<InsuranceProps> = ({ onBack }) => {
                     onClick={() => setShowQuoteForm(false)}
                     className="text-gray-500 hover:text-gray-700"
                   >
-                    <ArrowLeft className="w-6 h-6" />
+                    ✕
                   </button>
                 </div>
                 

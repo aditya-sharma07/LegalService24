@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, User, Tag, ExternalLink, RefreshCw, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, User, Tag, ExternalLink, RefreshCw, MapPin } from 'lucide-react';
 import { useNewsApi } from '../hooks/useNewsApi';
 import toast from 'react-hot-toast';
 import { useAuth } from '../hooks/useClerkAuth';
@@ -14,11 +15,8 @@ export const newsCategories = [
   'tips-advice'
 ];
 
-interface BlogProps {
-  onBack: () => void;
-}
-
-const Blog: React.FC<BlogProps> = ({ onBack }) => {
+const Blog: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const { articles, loading, error, retry } = useNewsApi(selectedCategory);
   const { isSignedIn } = useAuth();
@@ -44,7 +42,6 @@ const Blog: React.FC<BlogProps> = ({ onBack }) => {
   };
 
   const getExcerpt = (content: string) => {
-    // Remove HTML tags and get first 200 characters
     const plainText = content.replace(/<[^>]+>/g, '').trim();
     return plainText.length > 200 ? plainText.slice(0, 200) + '...' : plainText;
   };
@@ -65,14 +62,6 @@ const Blog: React.FC<BlogProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button
-          onClick={onBack}
-          className="flex items-center text-blue-600 hover:text-blue-700 mb-8"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Home
-        </button>
-
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Indian Legal News & Insights</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">

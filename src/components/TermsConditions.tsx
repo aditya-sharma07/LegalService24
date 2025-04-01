@@ -1,22 +1,12 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-interface TermsConditionsProps {
-  onBack: () => void;
-}
+const TermsConditions: React.FC = () => {
+  const navigate = useNavigate();
 
-const TermsConditions: React.FC<TermsConditionsProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <button
-          onClick={onBack}
-          className="flex items-center text-blue-600 hover:text-blue-700 mb-8"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Home
-        </button>
-
         <div className="bg-white rounded-xl shadow-lg p-8">
           <h1 className="text-3xl font-bold mb-6">Terms and Conditions</h1>
           
