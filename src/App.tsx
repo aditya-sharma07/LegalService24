@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { Toaster } from 'react-hot-toast';
 import Navigation from './components/Navigation';
@@ -11,6 +11,7 @@ import Blog from './components/Blog';
 import TermsConditions from './components/TermsConditions';
 import Careers from './components/Careers';
 import BecomeConsultant from './components/BecomeConsultant';
+import ConsultantLayout from './components/ConsultantLayout'; // Import the new layout
 import Insurance from './components/Insurance';
 import DocumentUpload from './components/DocumentUpload';
 import CaseTracking from './components/CaseTracking';
@@ -19,40 +20,58 @@ import Notifications from './components/Notifications';
 import { useAuth } from './hooks/useClerkAuth';
 import toast from 'react-hot-toast';
 
-
 function App() {
   return (
     <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
       <Router>
         <div className="min-h-screen bg-gray-50">
-          <Toaster position="top-right" />
-          <Navigation />
+          <Toaster position="top-right" /> 
           
-          <main className="pt-16">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/lawyer-selection" element={<LawyerSelection />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/terms" element={<TermsConditions />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/explore-services" element={<ExploreServices />} /> 
-              <Route path="/become-consultant" element={<BecomeConsultant />} />
-              <Route path="/insurance" element={<Insurance />} />
-              <Route path="/lawyer-reviews/:id" element={<LawyerReviews />} />
-              <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-              <Route path="/document-upload" element={<ProtectedRoute><DocumentUpload /></ProtectedRoute>} />
-              <Route path="/case-tracking" element={<ProtectedRoute><CaseTracking /></ProtectedRoute>} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
+          <Routes>
+            {/* Consultant route with separate layout */}
+            <Route 
+              path="/become-consultant" 
+              element={
+                <ConsultantLayout>
+                  <BecomeConsultant />
+                </ConsultantLayout>
+              } 
+            />
+
+            {/* All other routes with main navigation */}
+            <Route
+              path="/*"
+              element={
+                <>
+                  <Navigation />
+                  <main className="pt-16">
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/lawyer-selection" element={<LawyerSelection />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/blog" element={<Blog />} />
+                      <Route path="/terms" element={<TermsConditions />} />
+                      <Route path="/careers" element={<Careers />} />
+                      <Route path="/explore-services" element={<ExploreServices />} /> 
+                      <Route path="/insurance" element={<Insurance />} />
+                      <Route path="/lawyer-reviews/:id" element={<LawyerReviews />} />
+                      <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+                      <Route path="/document-upload" element={<ProtectedRoute><DocumentUpload /></ProtectedRoute>} />
+                      <Route path="/case-tracking" element={<ProtectedRoute><CaseTracking /></ProtectedRoute>} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </main>
+                </>
+              }
+            />
+          </Routes>
         </div>
       </Router>
     </ClerkProvider>
   );
 }
 
-// 🔹 Protected Route with "Sign in to continue" Toast
+// Protected Route with "Sign in to continue" Toast
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isSignedIn } = useAuth();
 

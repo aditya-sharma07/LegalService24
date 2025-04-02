@@ -51,7 +51,22 @@ const resources = {
       'Follow Us': 'Follow Us',
       'Terms & Conditions': 'Terms & Conditions',
       'Careers': 'Careers',
-      'Become a Consultant': 'Become a Consultant'
+      'Become a Consultant': 'Become a Consultant',
+
+      // Document Upload
+      'Please sign in to securely upload and manage your legal documents.': 'Please sign in to securely upload and manage your legal documents.',
+      'Sign In to Continue': 'Sign In to Continue',
+
+      // Case Tracking
+      'Please sign in to access your case tracking dashboard.': 'Please sign in to access your case tracking dashboard.',
+
+      // Reviews
+      'Please sign in to view reviews': 'Please sign in to view reviews',
+      'No reviews to display': 'No reviews to display',
+      'Was this review helpful?': 'Was this review helpful?',
+      'All Reviews': 'All Reviews',
+      'Positive Only': 'Positive Only',
+      'Critical Only': 'Critical Only'
     }
   },
   hi: {
@@ -86,22 +101,20 @@ const resources = {
       'Multi-Language Support': 'बहु-भाषा समर्थन',
       'Learn More': 'और जानें',
 
-      // Services
-      'Book Appointment Now': 'अभी अपॉइंटमेंट बुक करें',
-      'Comprehensive legal solutions designed to protect your interests and provide expert guidance when you need it most.': 'आपके हितों की रक्षा और जरूरत के समय विशेषज्ञ मार्गदर्शन प्रदान करने के लिए व्यापक कानूनी समाधान।',
+      // Document Upload
+      'Please sign in to securely upload and manage your legal documents.': 'कृपया अपने कानूनी दस्तावेज़ों को सुरक्षित रूप से अपलोड और प्रबंधित करने के लिए साइन इन करें।',
+      'Sign In to Continue': 'जारी रखने के लिए साइन इन करें',
 
-      // Categories
-      'Explore Legal Categories': 'कानूनी श्रेणियां देखें',
-      'Choose from our wide range of legal categories to find the right solution for your needs.': 'अपनी जरूरतों के लिए सही समाधान खोजने के लिए हमारी विस्तृत कानूनी श्रेणियों में से चुनें।',
+      // Case Tracking
+      'Please sign in to access your case tracking dashboard.': 'कृपया अपने केस ट्रैकिंग डैशबोर्ड तक पहुंचने के लिए साइन इन करें।',
 
-      // Footer
-      'Quick Links': 'त्वरित लिंक',
-      'Services': 'सेवाएं',
-      'Company': 'कंपनी',
-      'Follow Us': 'हमें फॉलो करें',
-      'Terms & Conditions': 'नियम और शर्तें',
-      'Careers': 'करियर',
-      'Become a Consultant': 'सलाहकार बनें'
+      // Reviews
+      'Please sign in to view reviews': 'समीक्षाएं देखने के लिए साइन इन करें',
+      'No reviews to display': 'दिखाने के लिए कोई समीक्षा नहीं है',
+      'Was this review helpful?': 'क्या यह समीक्षा सहायक थी?',
+      'All Reviews': 'सभी समीक्षाएं',
+      'Positive Only': 'केवल सकारात्मक',
+      'Critical Only': 'केवल आलोचनात्मक'
     }
   },
   bn: {
@@ -121,20 +134,20 @@ const resources = {
       'Expert legal solutions tailored to your needs. Available 24/7 for your peace of mind.': 'আপনার প্রয়োজন অনুযায়ী বিশেষজ্ঞ আইনি সমাধান। আপনার মনের শান্তির জন্য 24/7 উপলব্ধ।',
       'Explore Services': 'সেবাগুলি দেখুন',
 
-      // Stats
-      'Clients Served': 'সেবাপ্রাপ্ত ক্লায়েন্ট',
-      'Success Rate': 'সাফল্যের হার',
-      'Years Experience': 'বছরের অভিজ্ঞতা',
-      'Support': 'সহায়তা',
+      // Document Upload
+      'Please sign in to securely upload and manage your legal documents.': 'অনুগ্রহ করে আপনার আইনি নথিপত্র নিরাপদে আপলোড এবং পরিচালনা করতে সাইন ইন করুন।',
+      'Sign In to Continue': 'চালিয়ে যেতে সাইন ইন করুন',
 
-      // Features
-      'Smart Legal Solutions': 'স্মার্ট আইনি সমাধান',
-      'Innovative features designed to make your legal experience seamless and efficient.': 'আপনার আইনি অভিজ্ঞতাকে সহজ ও দক্ষ করার জন্য উদ্ভাবনী বৈশিষ্ট্য।',
-      'Document Upload': 'ডকুমেন্ট আপলোড',
-      'Legal Alerts': 'আইনি সতর্কতা',
-      'Case Tracking': 'কেস ট্র্যাকিং',
-      'Multi-Language Support': 'বহুভাষা সমর্থন',
-      'Learn More': 'আরও জানুন'
+      // Case Tracking
+      'Please sign in to access your case tracking dashboard.': 'আপনার মামলা ট্র্যাকিং ড্যাশবোর্ড অ্যাক্সেস করতে সাইন ইন করুন।',
+
+      // Reviews
+      'Please sign in to view reviews': 'রিভিউ দেখতে সাইন ইন করুন',
+      'No reviews to display': 'প্রদর্শন করার জন্য কোন রিভিউ নেই',
+      'Was this review helpful?': 'এই রিভিউটি কি সহায়ক ছিল?',
+      'All Reviews': 'সমস্ত রিভিউ',
+      'Positive Only': 'শুধুমাত্র ইতিবাচক',
+      'Critical Only': 'শুধুমাত্র সমালোচনামূলক'
     }
   }
 };
@@ -145,13 +158,12 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
-    detection: {
-      order: ['navigator'], // Detect browser language
-      caches: ['localStorage', 'cookie'], // Cache the detected language
-      convertDetectedLanguage: (lng) => lng.split('-')[0], // Normalize language codes (e.g., 'hi-IN' -> 'hi')
-    },
     interpolation: {
       escapeValue: false
+    },
+    detection: {
+      order: ['querystring', 'cookie', 'localStorage', 'navigator'],
+      caches: ['localStorage', 'cookie'],
     }
   });
 
