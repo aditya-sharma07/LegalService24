@@ -1,3 +1,4 @@
+// In App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
@@ -11,12 +12,12 @@ import Blog from './components/Blog';
 import TermsConditions from './components/TermsConditions';
 import Careers from './components/Careers';
 import BecomeConsultant from './components/BecomeConsultant';
-import ConsultantLayout from './components/ConsultantLayout'; // Import the new layout
 import Insurance from './components/Insurance';
 import DocumentUpload from './components/DocumentUpload';
 import CaseTracking from './components/CaseTracking';
 import LawyerReviews from './components/LawyerReviews';
 import Notifications from './components/Notifications';
+import BookConsultation from './components/BookConsultation';
 import { useAuth } from './hooks/useClerkAuth';
 import toast from 'react-hot-toast';
 
@@ -28,15 +29,8 @@ function App() {
           <Toaster position="top-right" /> 
           
           <Routes>
-            {/* Consultant route with separate layout */}
-            <Route 
-              path="/become-consultant" 
-              element={
-                <ConsultantLayout>
-                  <BecomeConsultant />
-                </ConsultantLayout>
-              } 
-            />
+            {/* BecomeConsultant as a standalone route with no navigation */}
+            <Route path="/become-consultant" element={<BecomeConsultant />} />
 
             {/* All other routes with main navigation */}
             <Route
@@ -58,6 +52,7 @@ function App() {
                       <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
                       <Route path="/document-upload" element={<ProtectedRoute><DocumentUpload /></ProtectedRoute>} />
                       <Route path="/case-tracking" element={<ProtectedRoute><CaseTracking /></ProtectedRoute>} />
+                      <Route path="/book-consultation/:lawyerId" element={<BookConsultation />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </main>
