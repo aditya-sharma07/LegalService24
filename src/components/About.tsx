@@ -123,7 +123,7 @@ const About: React.FC = () => {
                 <ul className="space-y-2">
                   <li><button onClick={() => navigate('/')} className="text-gray-400 hover:text-white transition-colors">Home</button></li>
                   <li><button onClick={() => navigate('/explore-services')} className="text-gray-400 hover:text-white transition-colors">Services</button></li>
-                  <li><button onClick={() => navigate('/premium-services')} className="text-gray-400 hover:text-white transition-colors">Premium</button></li>
+                  <li><button onClick={() => navigate('/insurance')} className="text-gray-400 hover:text-white transition-colors">Premium</button></li>
                 </ul>
               </div>
               <div>
