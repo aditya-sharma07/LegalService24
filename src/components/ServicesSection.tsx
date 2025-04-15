@@ -43,13 +43,8 @@ const ServicesSection = () => {
     }
   ];
 
-  const handleBookAppointment = (service: string): void => {
-    navigate('/lawyer-selection', { 
-      state: { 
-        specialization: "General Consultation", 
-        subcategory: service 
-      } 
-    });
+  const handleBookAppointment = (): void => {
+    navigate('/lawyer-selection'); // ✅ No filters applied
   };
 
   return (
@@ -92,8 +87,8 @@ const ServicesSection = () => {
               </div>
               
               <button
-                onClick={() => handleBookAppointment(service.title)}
-                className={`w-full bg-white text-blue-600 border border-blue-200 py-3 px-4 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300 flex items-center justify-center gap-2 font-medium`}
+                onClick={handleBookAppointment}
+                className="w-full bg-white text-blue-600 border border-blue-200 py-3 px-4 rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-300 flex items-center justify-center gap-2 font-medium"
               >
                 {t(service.action)}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

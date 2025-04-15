@@ -15,35 +15,45 @@ interface Lawyer {
 const LawyerSelection: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { specialization = "General Consultation", subcategory = "Online Consultation" } = location.state || {};
+  const { specialization = "", subcategory = "" } = location.state || {};
   
   const [lawyers, setLawyers] = useState<Lawyer[]>([]);
   const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  // Search and Filter States
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [experienceFilter, setExperienceFilter] = useState<string>("");
 
-  // Fetch Lawyers from Supabase
   useEffect(() => {
     const fetchLawyers = async () => {
       setLoading(true);
       setError("");
 
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from("consultants")
           .select("*")
-          .eq("specialization", specialization)
-          .eq("subcategory", subcategory)
           .eq("status", "Approved");
+
+        if (specialization) {
+          query = query.eq("specialization", specialization);
+        }
+
+        if (subcategory) {
+          query = query.eq("subcategory", subcategory);
+        }
+
+        const { data, error } = await query;
 
         if (error) throw error;
 
         if (!data || data.length === 0) {
-          setError(`No lawyers found for ${subcategory}.`);
+          setError(
+            specialization || subcategory
+              ? `No lawyers found for ${specialization || subcategory}.`
+              : "No lawyers found."
+          );
         } else {
           setLawyers(data);
           setFilteredLawyers(data);
@@ -59,18 +69,15 @@ const LawyerSelection: React.FC = () => {
     fetchLawyers();
   }, [specialization, subcategory]);
 
-  // Apply Search and Filters
   useEffect(() => {
     let filtered = lawyers;
 
-    // Apply Search
     if (searchQuery) {
       filtered = filtered.filter((lawyer) =>
         lawyer.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Apply Experience Filter
     if (experienceFilter) {
       const minExperience = parseInt(experienceFilter);
       filtered = filtered.filter((lawyer) => lawyer.experience >= minExperience);
@@ -79,26 +86,21 @@ const LawyerSelection: React.FC = () => {
     setFilteredLawyers(filtered);
   }, [searchQuery, experienceFilter, lawyers]);
 
-  // Handle View Reviews
   const handleViewReviews = (lawyerId: number) => {
     navigate(`/lawyer-reviews/${lawyerId}`);
   };
 
-  // Handle Booking Consultation
   const handleBookConsultation = (lawyerId: number) => {
     navigate(`/book-consultation/${lawyerId}`);
   };
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-100 shadow-md rounded-lg mt-20">
-      {/* Heading */}
       <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
-        Available Lawyers for {subcategory}
+        {subcategory ? `Available Lawyers for ${subcategory}` : `All Available Lawyers`}
       </h2>
 
-      {/* Search and Filters Section */}
       <div className="flex flex-wrap gap-4 mb-6 justify-center">
-        {/* Search Bar */}
         <div className="relative flex-1 max-w-md">
           <input
             type="text"
@@ -110,7 +112,6 @@ const LawyerSelection: React.FC = () => {
           <Search className="w-5 h-5 absolute left-3 top-2.5 text-gray-400" />
         </div>
 
-        {/* Experience Filter */}
         <select
           value={experienceFilter}
           onChange={(e) => setExperienceFilter(e.target.value)}
@@ -123,7 +124,6 @@ const LawyerSelection: React.FC = () => {
         </select>
       </div>
 
-      {/* Display Lawyers */}
       {loading ? (
         <p className="text-gray-600 text-center">Loading...</p>
       ) : error ? (
@@ -133,13 +133,14 @@ const LawyerSelection: React.FC = () => {
       ) : (
         <div className="space-y-6">
           {filteredLawyers.map((lawyer) => (
-            <div key={lawyer.id} className="bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row items-center md:items-start hover:shadow-xl transition-shadow">
-              {/* Lawyer Avatar */}
+            <div
+              key={lawyer.id}
+              className="bg-white p-6 rounded-xl shadow-lg flex flex-col md:flex-row items-center md:items-start hover:shadow-xl transition-shadow"
+            >
               <div className="w-28 h-28 bg-gray-300 rounded-full flex items-center justify-center mr-6 mb-4 md:mb-0">
                 <User className="w-14 h-14 text-gray-600" />
               </div>
 
-              {/* Lawyer Details */}
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-gray-800">{lawyer.name}</h3>
                 <p className="text-gray-600 flex items-center mt-2">
@@ -155,9 +156,7 @@ const LawyerSelection: React.FC = () => {
                   {lawyer.contact}
                 </p>
 
-                {/* Buttons Section */}
                 <div className="mt-4 flex space-x-3">
-                  {/* View Reviews Button */}
                   <button
                     onClick={() => handleViewReviews(lawyer.id)}
                     className="flex items-center text-white bg-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
@@ -166,7 +165,6 @@ const LawyerSelection: React.FC = () => {
                     View Reviews
                   </button>
 
-                  {/* Book Consultation Button */}
                   <button
                     onClick={() => handleBookConsultation(lawyer.id)}
                     className="flex items-center text-white bg-gradient-to-r from-green-500 to-green-700 px-5 py-2 rounded-lg font-medium hover:scale-105 transition transform shadow-lg"

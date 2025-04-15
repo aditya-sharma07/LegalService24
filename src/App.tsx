@@ -52,6 +52,7 @@ function App() {
                       <Route path="/document-upload" element={<ProtectedRoute><DocumentUpload /></ProtectedRoute>} />
                       <Route path="/case-tracking" element={<ProtectedRoute><CaseTracking /></ProtectedRoute>} />
                       <Route path="/book-consultation/:lawyerId" element={<BookConsultation />} />
+                      <Route path="/become-consultant" element={<BecomeConsultant />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </main>
