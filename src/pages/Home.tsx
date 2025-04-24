@@ -6,7 +6,7 @@ import FeaturesSection from '@components/FeaturesSection';
 import LawCategoriesSection from '@components/LawCategoriesSection';
 import ServicesSection from '@components/ServicesSection';
 import TestimonialsSection from '@components/TestimonialsSection';
-import ContactSection from '@components/ContactSection'; 
+import FAQSection from '@components/FAQSection'; 
 import FooterSection from '@components/FooterSection';
 
 const Home: React.FC = () => {
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
       <LawCategoriesSection />
       <ServicesSection />
       <TestimonialsSection />
-      <ContactSection />
+      <FAQSection />
       <FooterSection />
     </>
   );
